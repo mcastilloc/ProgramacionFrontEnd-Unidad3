@@ -62,16 +62,16 @@ const productos = [
 
 function agregarProducto(producto) {
 
+  if (producto.stock <= 0) {
+    alert('No hay más unidades disponibles')
+    return
+  }
+
   const item = carrito.value.find(
     p => p.id === producto.id
   )
 
   if (item) {
-
-    if (item.cantidad >= producto.stock) {
-      alert('No hay más unidades disponibles')
-      return
-    }
 
     item.cantidad++
 
@@ -84,13 +84,29 @@ function agregarProducto(producto) {
 
   }
 
+  producto.stock--
+
 }
 
 
 function removerProducto(id) {
 
+  const item = carrito.value.find(
+    producto => producto.id === id
+  )
+
+  const productoOriginal = productos.find(
+    producto => producto.id === id
+  )
+
+  if (item && productoOriginal) {
+
+    productoOriginal.stock += item.cantidad
+
+  }
+
   carrito.value = carrito.value.filter(
-    item => item.id !== id
+    producto => producto.id !== id
   )
 
 }
@@ -108,35 +124,43 @@ function removerProducto(id) {
       <div class="row">
 
         <div class="col-md-8">
-          <div v-for="producto in productos" :key="producto.id" class="col-md-4 mb-4">
 
-            <div class="card h-100 shadow">
+          <div class="row">
 
-              <img :src="producto.imagen" :alt="producto.nombre" class="card-img-top">
+            <div v-for="producto in productos" :key="producto.id" class="col-md-4 mb-4">
 
-              <div class="card-body">
+              <div class="card h-100 shadow">
 
-                <h5>{{ producto.nombre }}</h5>
+                <img :src="producto.imagen" :alt="producto.nombre" class="card-img-top">
 
-                <p>
-                  Precio:
-                  <strong>
-                    ${{ producto.precio.toLocaleString('es-CL') }}
-                  </strong>
-                </p>
+                <div class="card-body">
 
-                <p>
-                  Stock: {{ producto.stock }}
-                </p>
+                  <h5>{{ producto.nombre }}</h5>
 
+                  <p>
+                    Precio:
+                    <strong>
+                      ${{ producto.precio.toLocaleString('es-CL') }}
+                    </strong>
+                  </p>
 
+                  <p :class="producto.stock === 0 ? 'text-danger fw-bold' : ''">
+                    Stock: {{ producto.stock }}
+                  </p>
 
-                <button class="btn btn-primary" @click="agregarProducto(producto)">
-                  Agregar al carrito
-                </button>
+                  <button class="btn btn-primary" @click="agregarProducto(producto)">
+                    Agregar al carrito
+                  </button>
+
+                  <!-- 
+                  <button class="btn btn-primary" :disabled="producto.stock === 0" @click="agregarProducto(producto)">
+                    Agregar al carrito
+                  </button>
+                  -->
+
+                </div>
 
               </div>
-
             </div>
           </div>
         </div>
@@ -169,11 +193,11 @@ function removerProducto(id) {
                   </p>
 
                   <p>
-                    Stock: {{ item.stock }}
+                    Precio: ${{ item.precio.toLocaleString('es-CL') }}
                   </p>
 
                   <p>
-                    ${{ item.precio.toLocaleString('es-CL') }}
+                    Subtotal: ${{ (item.precio * item.cantidad).toLocaleString('es-CL') }}
                   </p>
 
                   <button class="btn btn-danger btn-sm" @click="removerProducto(item.id)">
@@ -204,3 +228,16 @@ function removerProducto(id) {
 
   </div>
 </template>
+
+
+<style>
+.card-img-top {
+  height: 200px;
+  object-fit: contain;
+  padding: 10px;
+}
+
+.card {
+  height: 100%;
+}
+</style>
