@@ -129,7 +129,7 @@ function removerProducto(id) {
 
             <div v-for="producto in productos" :key="producto.id" class="col-md-4 mb-4">
 
-              <div class="card h-100 shadow">
+              <div class="card h-200 shadow">
 
                 <img :src="producto.imagen" :alt="producto.nombre" class="card-img-top">
 
@@ -184,12 +184,9 @@ function removerProducto(id) {
 
                 <div v-for="item in carrito" :key="item.id" class="mb-3 border-bottom pb-2">
 
-                  <img :src="item.imagen" :alt="item.nombre" width="60">
-
-                  <h6>{{ item.nombre }}</h6>
-
                   <p>
-                    Cantidad: {{ item.cantidad }}
+                    <img :src="item.imagen" :alt="item.nombre" width="60"> {{ item.nombre }} - Cantidad: {{
+                    item.cantidad }}
                   </p>
 
                   <p>
@@ -208,19 +205,17 @@ function removerProducto(id) {
 
               </div>
 
-              <hr>
-
-              <h5>
-                Total:
-                ${{ total.toLocaleString('es-CL') }}
-              </h5>
 
             </div>
 
           </div>
 
         </div>
-
+        <hr>
+        <h1>
+          Total:
+          ${{ total.toLocaleString('es-CL') }}
+        </h1>
       </div>
 
     </div>
